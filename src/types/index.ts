@@ -1,11 +1,12 @@
 export type EventCategory =
   | 'All'
-  | 'Concert'
-  | 'Workshop'
-  | 'College'
+  | 'Music'
   | 'Comedy'
+  | 'Workshops'
+  | 'College'
   | 'Sports'
-  | 'Meetup';
+  | 'Meetups'
+  | 'Parties';
 
 export interface Coordinates {
   latitude: number;
@@ -18,12 +19,21 @@ export interface BuddyAttendee {
   avatarUrl: string;
 }
 
+export interface EventOrganizer {
+  id: string;
+  name: string;
+  avatarUrl: string;
+  isVerified: boolean;
+  role?: string;
+}
+
 export interface HyperlocalEvent {
   id: string;
   title: string;
   tagline: string;
+  description: string;
   category: EventCategory;
-  date: string; // ISO string or human string
+  date: string; // ISO format or date string
   displayDate: string;
   time: string;
   venue: string;
@@ -35,8 +45,12 @@ export interface HyperlocalEvent {
   isFree: boolean;
   attendeeCount: number;
   buddiesAttending: BuddyAttendee[];
+  organizer: EventOrganizer;
   isFeatured?: boolean;
   isTrending?: boolean;
+  isUpcoming?: boolean;
+  isSeedDemoData: boolean;
+  isVerifiedRealWorld: boolean;
 }
 
 export type RootTabParamList = {
@@ -44,4 +58,9 @@ export type RootTabParamList = {
   Radar: undefined;
   Saved: undefined;
   Profile: undefined;
+};
+
+export type RootStackParamList = {
+  MainTabs: undefined;
+  EventDetail: { eventId: string };
 };

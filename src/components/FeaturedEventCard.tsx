@@ -4,24 +4,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { HyperlocalEvent } from '../types';
 import { colors, spacing, borderRadius, typography } from '../theme';
+import { formatDistance } from '../utils/distance';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.82;
 
 interface FeaturedEventCardProps {
   event: HyperlocalEvent;
+  isSaved?: boolean;
   onPress?: () => void;
   onBookmarkPress?: () => void;
 }
 
 export const FeaturedEventCard: React.FC<FeaturedEventCardProps> = ({
   event,
+  isSaved = false,
   onPress,
   onBookmarkPress,
 }) => {
   return (
     <TouchableOpacity
-      activeOpacity={0.9}
+      activeOpacity={0.92}
       onPress={onPress}
       style={styles.cardContainer}
     >
@@ -32,8 +35,8 @@ export const FeaturedEventCard: React.FC<FeaturedEventCardProps> = ({
       />
 
       <LinearGradient
-        colors={['transparent', 'rgba(11, 13, 17, 0.4)', 'rgba(9, 11, 14, 0.95)']}
-        locations={[0, 0.4, 0.9]}
+        colors={['transparent', 'rgba(11, 13, 17, 0.4)', 'rgba(9, 11, 14, 0.96)']}
+        locations={[0, 0.35, 0.88]}
         style={styles.gradientOverlay}
       />
 
@@ -43,19 +46,38 @@ export const FeaturedEventCard: React.FC<FeaturedEventCardProps> = ({
           <Text style={styles.categoryText}>{event.category}</Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.bookmarkButton}
-          activeOpacity={0.7}
-          onPress={onBookmarkPress}
-        >
-          <Ionicons name="bookmark-outline" size={16} color={colors.textPrimary} />
-        </TouchableOpacity>
+        <View style={styles.topRightActions}>
+          {event.isVerifiedRealWorld ? (
+            <View style={styles.verifiedBadge}>
+              <Ionicons name="checkmark-circle" size={12} color={colors.success} />
+              <Text style={styles.verifiedText}>Verified</Text>
+            </View>
+          ) : (
+            <View style={styles.demoBadge}>
+              <Text style={styles.demoText}>Demo Spotlight</Text>
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={[styles.bookmarkButton, isSaved && styles.bookmarkButtonActive]}
+            activeOpacity={0.7}
+            onPress={onBookmarkPress}
+          >
+            <Ionicons
+              name={isSaved ? 'bookmark' : 'bookmark-outline'}
+              size={16}
+              color={isSaved ? colors.amberPrimary : colors.textPrimary}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Card Content Footer */}
       <View style={styles.contentFooter}>
         <View style={styles.dateBadge}>
-          <Text style={styles.dateText}>{event.displayDate} • {event.time}</Text>
+          <Text style={styles.dateText}>
+            {event.displayDate} • {event.time}
+          </Text>
         </View>
 
         <Text style={styles.titleText} numberOfLines={2}>
@@ -64,9 +86,10 @@ export const FeaturedEventCard: React.FC<FeaturedEventCardProps> = ({
 
         <View style={styles.metaRow}>
           <View style={styles.venueRow}>
-            <Ionicons name="location-outline" size={14} color={colors.amberPrimary} />
+            <Ionicons name="location-sharp" size={14} color={colors.amberPrimary} />
             <Text style={styles.venueText} numberOfLines={1}>
               {event.venue}
+              {event.distanceKm !== undefined ? ` • ${formatDistance(event.distanceKm)}` : ''}
             </Text>
           </View>
 
@@ -87,7 +110,7 @@ export const FeaturedEventCard: React.FC<FeaturedEventCardProps> = ({
               ))}
             </View>
             <Text style={styles.buddiesText}>
-              {event.buddiesAttending.length} friend{event.buddiesAttending.length > 1 ? 's' : ''} going
+              {event.buddiesAttending.length} buddy{event.buddiesAttending.length > 1 ? 's' : ''} going
             </Text>
           </View>
         )}
@@ -133,7 +156,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   categoryPill: {
-    backgroundColor: 'rgba(9, 11, 14, 0.7)',
+    backgroundColor: 'rgba(9, 11, 14, 0.75)',
     paddingHorizontal: spacing.sm + 2,
     paddingVertical: spacing.xs,
     borderRadius: borderRadius.pill,
@@ -144,15 +167,53 @@ const styles = StyleSheet.create({
     ...typography.micro,
     color: colors.amberPrimary,
   },
-  bookmarkButton: {
-    width: 32,
-    height: 32,
+  topRightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  verifiedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.4)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 3,
     borderRadius: borderRadius.pill,
-    backgroundColor: 'rgba(9, 11, 14, 0.75)',
+    gap: 3,
+  },
+  verifiedText: {
+    ...typography.micro,
+    color: colors.success,
+    fontSize: 9,
+  },
+  demoBadge: {
+    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+    borderWidth: 1,
+    borderColor: colors.borderGold,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 3,
+    borderRadius: borderRadius.pill,
+  },
+  demoText: {
+    ...typography.micro,
+    color: colors.amberLight,
+    fontSize: 9,
+  },
+  bookmarkButton: {
+    width: 34,
+    height: 34,
+    borderRadius: borderRadius.pill,
+    backgroundColor: 'rgba(9, 11, 14, 0.8)',
     borderWidth: 1,
     borderColor: colors.borderSubtle,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bookmarkButtonActive: {
+    borderColor: colors.amberPrimary,
+    backgroundColor: 'rgba(245, 158, 11, 0.2)',
   },
   contentFooter: {
     position: 'absolute',
@@ -169,6 +230,7 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.amberLight,
     letterSpacing: 0.5,
+    fontWeight: '600',
   },
   titleText: {
     ...typography.h2,

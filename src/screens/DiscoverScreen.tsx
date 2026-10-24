@@ -6,118 +6,251 @@ import {
   ScrollView,
   FlatList,
   SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
 import { Header } from '../components/Header';
-import { FeaturedEventCard } from '../components/FeaturedEventCard';
+import { CategorySelector } from '../components/CategorySelector';
 import { RadiusFilter } from '../components/RadiusFilter';
-import { MOCK_EVENTS, DEFAULT_USER_COORDINATES } from '../data/mockEvents';
-import { calculateDistanceKm, formatDistance } from '../utils/distance';
+import { FeaturedEventCard } from '../components/FeaturedEventCard';
+import { EventGridCard } from '../components/EventGridCard';
+import { useEvents } from '../context/EventsContext';
+import { useLocation } from '../context/LocationContext';
+import { calculateDistanceKm } from '../utils/distance';
+import { EventCategory, RootStackParamList } from '../types';
+import { DEMO_LOCATIONS } from '../data/mockEvents';
 import { colors, spacing, borderRadius, typography } from '../theme';
 
-export const DiscoverScreen: React.FC = () => {
-  const [selectedRadius, setSelectedRadius] = useState<number>(10);
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-  // Compute live distances from user coordinates
+export const DiscoverScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp>();
+  const { allEvents, isSaved, toggleSave } = useEvents();
+  const { userCoordinates, locationName, isUsingFallback, setDemoLocation } = useLocation();
+
+  const [selectedCategory, setSelectedCategory] = useState<EventCategory>('All');
+  const [selectedRadius, setSelectedRadius] = useState<number>(15);
+  const [showLocationPicker, setShowLocationPicker] = useState<boolean>(false);
+
+  // Calculate live distances relative to active user coordinates
   const eventsWithDistance = useMemo(() => {
-    return MOCK_EVENTS.map((event) => {
-      const dist = calculateDistanceKm(DEFAULT_USER_COORDINATES, event.coordinates);
+    return allEvents.map((event) => {
+      const dist = calculateDistanceKm(userCoordinates, event.coordinates);
       return {
         ...event,
         distanceKm: dist,
       };
     });
-  }, []);
+  }, [allEvents, userCoordinates]);
 
-  // Filter based on active radius
+  // Combined Geospatial & Category Filter
   const filteredEvents = useMemo(() => {
-    return eventsWithDistance.filter(
-      (ev) => (ev.distanceKm ?? 0) <= selectedRadius
-    );
-  }, [eventsWithDistance, selectedRadius]);
+    return eventsWithDistance.filter((event) => {
+      const matchesRadius = (event.distanceKm ?? 0) <= selectedRadius;
+      const matchesCategory =
+        selectedCategory === 'All' || event.category === selectedCategory;
+      return matchesRadius && matchesCategory;
+    });
+  }, [eventsWithDistance, selectedRadius, selectedCategory]);
 
+  // Section 1: Featured
   const featuredEvents = useMemo(() => {
     return filteredEvents.filter((ev) => ev.isFeatured);
   }, [filteredEvents]);
 
+  // Section 2: Trending Near You
   const trendingEvents = useMemo(() => {
-    return filteredEvents.filter((ev) => !ev.isFeatured || ev.isTrending);
+    return filteredEvents.filter((ev) => ev.isTrending);
   }, [filteredEvents]);
+
+  // Section 3: Upcoming
+  const upcomingEvents = useMemo(() => {
+    return filteredEvents.filter((ev) => ev.isUpcoming);
+  }, [filteredEvents]);
+
+  const handleCardPress = (eventId: string) => {
+    navigation.navigate('EventDetail', { eventId });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <Header
-        locationName="Indiranagar Tech District"
+        locationName={locationName}
         radiusKm={selectedRadius}
+        onLocationPress={() => setShowLocationPicker((prev) => !prev)}
       />
+
+      {/* Demo Location Switcher Sheet / Dropdown */}
+      {showLocationPicker && (
+        <View style={styles.locationDropdown}>
+          <View style={styles.dropdownHeader}>
+            <Text style={styles.dropdownTitle}>Select Discovery Location</Text>
+            <TouchableOpacity onPress={() => setShowLocationPicker(false)}>
+              <Ionicons name="close" size={18} color={colors.textSecondary} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.dropdownSubtitle}>
+            Test hyperlocal distance filtering with realistic neighborhood coordinates:
+          </Text>
+          <View style={styles.demoLocationList}>
+            {DEMO_LOCATIONS.map((loc) => (
+              <TouchableOpacity
+                key={loc.id}
+                style={styles.demoLocationItem}
+                onPress={() => {
+                  setDemoLocation(loc.id);
+                  setShowLocationPicker(false);
+                }}
+              >
+                <Ionicons name="location-sharp" size={16} color={colors.amberPrimary} />
+                <Text style={styles.demoLocationName}>{loc.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Fallback indicator banner */}
+      {isUsingFallback && (
+        <View style={styles.demoBanner}>
+          <Ionicons name="compass-outline" size={14} color={colors.amberLight} />
+          <Text style={styles.demoBannerText}>
+            Simulated campus & metro location active • Tap location header to switch hubs
+          </Text>
+        </View>
+      )}
 
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* Interactive Radius Filter */}
+        {/* Horizontal Category Selector */}
+        <CategorySelector
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+
+        {/* Continuous Radius Slider */}
         <RadiusFilter
           currentRadius={selectedRadius}
           onRadiusChange={setSelectedRadius}
           matchCount={filteredEvents.length}
         />
 
-        {/* Featured Events Carousel */}
-        <View style={styles.sectionContainer}>
-          <View style={styles.sectionHeader}>
-            <View>
-              <Text style={styles.sectionTitle}>Featured Spotlights</Text>
-              <Text style={styles.sectionSubtitle}>Hand-picked events right in your circle</Text>
+        {/* Empty State when no events match radius & category */}
+        {filteredEvents.length === 0 ? (
+          <View style={styles.emptyStateContainer}>
+            <View style={styles.emptyIconCircle}>
+              <Ionicons name="radio-outline" size={32} color={colors.amberPrimary} />
             </View>
+            <Text style={styles.emptyTitle}>No events in this radar range</Text>
+            <Text style={styles.emptySubtitle}>
+              No {selectedCategory !== 'All' ? selectedCategory.toLowerCase() : ''} events found
+              within {selectedRadius} km. Try expanding the slider to 25 km or 50 km!
+            </Text>
+            <TouchableOpacity
+              style={styles.expandRadiusBtn}
+              onPress={() => setSelectedRadius(35)}
+            >
+              <Text style={styles.expandRadiusBtnText}>Expand Radar to 35 km</Text>
+            </TouchableOpacity>
           </View>
-
-          <FlatList
-            horizontal
-            data={featuredEvents.length > 0 ? featuredEvents : eventsWithDistance.slice(0, 2)}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <FeaturedEventCard event={item} />}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalListContent}
-            snapToInterval={280}
-            decelerationRate="fast"
-          />
-        </View>
-
-        {/* Trending Events Near You */}
-        <View style={styles.sectionContainer}>
-          <View style={styles.sectionHeader}>
-            <View>
-              <Text style={styles.sectionTitle}>Trending Near You</Text>
-              <Text style={styles.sectionSubtitle}>Highest community engagement this week</Text>
-            </View>
-          </View>
-
-          <View style={styles.listContainer}>
-            {trendingEvents.map((item) => (
-              <View key={item.id} style={styles.compactCard}>
-                <View style={styles.compactContent}>
-                  <View style={styles.tagRow}>
-                    <Text style={styles.compactCategory}>{item.category}</Text>
-                    {item.distanceKm !== undefined && (
-                      <Text style={styles.compactDistance}>
-                        • {formatDistance(item.distanceKm)}
-                      </Text>
-                    )}
+        ) : (
+          <>
+            {/* Section 1: Cinematic Featured Carousel */}
+            {featuredEvents.length > 0 && (
+              <View style={styles.sectionContainer}>
+                <View style={styles.sectionHeader}>
+                  <View>
+                    <Text style={styles.sectionTitle}>Featured Spotlights</Text>
+                    <Text style={styles.sectionSubtitle}>
+                      High-impact community events within {selectedRadius} km
+                    </Text>
                   </View>
-                  <Text style={styles.compactTitle} numberOfLines={1}>
-                    {item.title}
-                  </Text>
-                  <Text style={styles.compactVenue} numberOfLines={1}>
-                    {item.venue} • {item.displayDate}
-                  </Text>
                 </View>
-                <View style={styles.compactPriceBadge}>
-                  <Text style={styles.compactPriceText}>{item.price}</Text>
+
+                <FlatList
+                  horizontal
+                  data={featuredEvents}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    <FeaturedEventCard
+                      event={item}
+                      isSaved={isSaved(item.id)}
+                      onPress={() => handleCardPress(item.id)}
+                      onBookmarkPress={() => toggleSave(item.id)}
+                    />
+                  )}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalListContent}
+                  snapToInterval={280}
+                  decelerationRate="fast"
+                />
+              </View>
+            )}
+
+            {/* Section 2: Trending Near You (Square / Portrait Cards) */}
+            {trendingEvents.length > 0 && (
+              <View style={styles.sectionContainer}>
+                <View style={styles.sectionHeader}>
+                  <View>
+                    <Text style={styles.sectionTitle}>Trending Near You</Text>
+                    <Text style={styles.sectionSubtitle}>
+                      Popular with nearby circles and campuses
+                    </Text>
+                  </View>
+                </View>
+
+                <FlatList
+                  horizontal
+                  data={trendingEvents}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    <EventGridCard
+                      event={item}
+                      isSaved={isSaved(item.id)}
+                      onPress={() => handleCardPress(item.id)}
+                      onBookmarkPress={() => toggleSave(item.id)}
+                      variant="portrait"
+                    />
+                  )}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalListContent}
+                />
+              </View>
+            )}
+
+            {/* Section 3: Upcoming Events (List View) */}
+            {upcomingEvents.length > 0 && (
+              <View style={styles.sectionContainer}>
+                <View style={styles.sectionHeader}>
+                  <View>
+                    <Text style={styles.sectionTitle}>Upcoming on Radar</Text>
+                    <Text style={styles.sectionSubtitle}>
+                      Next 14 days in your community
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.upcomingList}>
+                  {upcomingEvents.map((item) => (
+                    <EventGridCard
+                      key={item.id}
+                      event={item}
+                      isSaved={isSaved(item.id)}
+                      onPress={() => handleCardPress(item.id)}
+                      onBookmarkPress={() => toggleSave(item.id)}
+                      variant="horizontal"
+                    />
+                  ))}
                 </View>
               </View>
-            ))}
-          </View>
-        </View>
+            )}
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -133,6 +266,66 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: spacing.xxxl,
+  },
+  demoBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(245, 158, 11, 0.08)',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 6,
+    gap: spacing.xs,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(245, 158, 11, 0.15)',
+  },
+  demoBannerText: {
+    ...typography.caption,
+    color: colors.amberLight,
+    fontSize: 11,
+    flex: 1,
+  },
+  locationDropdown: {
+    backgroundColor: colors.surfaceCard,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderGold,
+    padding: spacing.md,
+    marginHorizontal: spacing.lg,
+    borderRadius: borderRadius.md,
+    marginTop: spacing.xs,
+    zIndex: 100,
+  },
+  dropdownHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  dropdownTitle: {
+    ...typography.caption,
+    color: colors.textPrimary,
+    fontWeight: '700',
+  },
+  dropdownSubtitle: {
+    ...typography.caption,
+    color: colors.textMuted,
+    fontSize: 11,
+    marginBottom: spacing.sm,
+  },
+  demoLocationList: {
+    gap: spacing.xs,
+  },
+  demoLocationItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: borderRadius.sm,
+  },
+  demoLocationName: {
+    ...typography.caption,
+    color: colors.textPrimary,
+    fontWeight: '600',
   },
   sectionContainer: {
     marginTop: spacing.lg,
@@ -156,59 +349,48 @@ const styles = StyleSheet.create({
   horizontalListContent: {
     paddingHorizontal: spacing.lg,
   },
-  listContainer: {
+  upcomingList: {
     paddingHorizontal: spacing.lg,
-    gap: spacing.sm,
   },
-  compactCard: {
-    flexDirection: 'row',
+  emptyStateContainer: {
     alignItems: 'center',
-    justifyContent: 'space-between',
+    paddingHorizontal: spacing.xxl,
+    paddingVertical: spacing.xxl,
+    marginTop: spacing.xl,
+  },
+  emptyIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: colors.surfaceCard,
-    padding: spacing.md,
-    borderRadius: borderRadius.lg,
     borderWidth: 1,
-    borderColor: colors.borderSubtle,
-  },
-  compactContent: {
-    flex: 1,
-    marginRight: spacing.sm,
-  },
-  tagRow: {
-    flexDirection: 'row',
+    borderColor: colors.borderGold,
     alignItems: 'center',
-    gap: 4,
-    marginBottom: 2,
+    justifyContent: 'center',
+    marginBottom: spacing.md,
   },
-  compactCategory: {
-    ...typography.micro,
-    color: colors.amberPrimary,
-  },
-  compactDistance: {
-    ...typography.caption,
-    color: colors.textMuted,
-    fontSize: 11,
-  },
-  compactTitle: {
-    ...typography.bodyBold,
+  emptyTitle: {
+    ...typography.h3,
     color: colors.textPrimary,
-    marginBottom: 2,
+    marginBottom: spacing.xs,
+    textAlign: 'center',
   },
-  compactVenue: {
-    ...typography.caption,
+  emptySubtitle: {
+    ...typography.body,
     color: colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
+    lineHeight: 20,
   },
-  compactPriceBadge: {
-    backgroundColor: colors.surfaceElevated,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: borderRadius.sm,
-    borderWidth: 1,
-    borderColor: colors.borderSubtle,
+  expandRadiusBtn: {
+    backgroundColor: colors.amberPrimary,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm + 2,
+    borderRadius: borderRadius.pill,
   },
-  compactPriceText: {
+  expandRadiusBtnText: {
     ...typography.caption,
-    color: colors.amberPrimary,
+    color: colors.textOnAmber,
     fontWeight: '700',
   },
 });

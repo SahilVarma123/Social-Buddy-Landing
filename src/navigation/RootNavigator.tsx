@@ -1,17 +1,20 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { DiscoverScreen } from '../screens/DiscoverScreen';
 import { RadarScreen } from '../screens/RadarScreen';
 import { SavedScreen } from '../screens/SavedScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
-import { RootTabParamList } from '../types';
+import { EventDetailScreen } from '../screens/EventDetailScreen';
+import { RootTabParamList, RootStackParamList } from '../types';
 import { colors, typography } from '../theme';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export const RootNavigator: React.FC = () => {
+const MainTabs: React.FC = () => {
   return (
     <Tab.Navigator
       initialRouteName="Discover"
@@ -22,7 +25,7 @@ export const RootNavigator: React.FC = () => {
         tabBarActiveTintColor: colors.amberPrimary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarLabelStyle: styles.tabBarLabel,
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, color }) => {
           let iconName: keyof typeof Ionicons.glyphMap = 'compass-outline';
 
           if (route.name === 'Discover') {
@@ -48,6 +51,26 @@ export const RootNavigator: React.FC = () => {
       <Tab.Screen name="Saved" component={SavedScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
+  );
+};
+
+export const RootNavigator: React.FC = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
+      <Stack.Screen name="MainTabs" component={MainTabs} />
+      <Stack.Screen
+        name="EventDetail"
+        component={EventDetailScreen}
+        options={{
+          animation: 'slide_from_right',
+        }}
+      />
+    </Stack.Navigator>
   );
 };
 

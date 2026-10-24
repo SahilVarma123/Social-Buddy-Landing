@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Slider from '@react-native-community/slider';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, typography } from '../theme';
 
-const RADIUS_OPTIONS = [2, 5, 10, 25, 50];
+const PRESETS = [3, 10, 25, 50];
 
 interface RadiusFilterProps {
   currentRadius: number;
@@ -15,43 +16,82 @@ interface RadiusFilterProps {
 export const RadiusFilter: React.FC<RadiusFilterProps> = ({
   currentRadius,
   onRadiusChange,
-  matchCount,
+  matchCount = 0,
 }) => {
-  const handleSelect = (radius: number) => {
+  const handlePreset = (radius: number) => {
     try {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     } catch {
-      // Graceful fallback if haptics is not available
+      // Haptics fallback
     }
     onRadiusChange(radius);
   };
 
+  const handleSliderSlidingComplete = (val: number) => {
+    try {
+      Haptics.selectionAsync();
+    } catch {
+      // Haptics fallback
+    }
+    onRadiusChange(Math.round(val));
+  };
+
   return (
     <View style={styles.container}>
+      {/* Header Info */}
       <View style={styles.headerRow}>
-        <View style={styles.labelGroup}>
-          <Ionicons name="radio-outline" size={16} color={colors.amberPrimary} />
-          <Text style={styles.label}>Hyperlocal Radar</Text>
-        </View>
-        {matchCount !== undefined && (
-          <View style={styles.countBadge}>
-            <Text style={styles.countText}>{matchCount} found nearby</Text>
+        <View style={styles.titleGroup}>
+          <View style={styles.radarIconBox}>
+            <Ionicons name="radio-outline" size={14} color={colors.amberPrimary} />
           </View>
-        )}
+          <Text style={styles.title}>Hyperlocal Discovery Radius</Text>
+        </View>
+
+        <View style={styles.countBadge}>
+          <Text style={styles.countText}>
+            {matchCount} event{matchCount === 1 ? '' : 's'} in range
+          </Text>
+        </View>
       </View>
 
-      <View style={styles.presetRow}>
-        {RADIUS_OPTIONS.map((radius) => {
-          const isSelected = radius === currentRadius;
+      {/* Metric Display */}
+      <View style={styles.metricRow}>
+        <Text style={styles.metricLabel}>Search Radius</Text>
+        <Text style={styles.metricValue}>{currentRadius} km</Text>
+      </View>
+
+      {/* Continuous Slider (1 - 50 km) */}
+      <Slider
+        style={styles.slider}
+        minimumValue={1}
+        maximumValue={50}
+        step={1}
+        value={currentRadius}
+        onValueChange={(val) => onRadiusChange(Math.round(val))}
+        onSlidingComplete={handleSliderSlidingComplete}
+        minimumTrackTintColor={colors.amberPrimary}
+        maximumTrackTintColor={colors.surfaceElevated}
+        thumbTintColor={colors.amberPrimary}
+      />
+
+      <View style={styles.sliderLimits}>
+        <Text style={styles.limitText}>1 km (Walking)</Text>
+        <Text style={styles.limitText}>50 km (Metro Area)</Text>
+      </View>
+
+      {/* Quick Jump Presets */}
+      <View style={styles.presetsRow}>
+        {PRESETS.map((p) => {
+          const isActive = currentRadius === p;
           return (
             <TouchableOpacity
-              key={radius}
-              style={[styles.pill, isSelected && styles.pillSelected]}
-              onPress={() => handleSelect(radius)}
+              key={p}
+              style={[styles.presetChip, isActive && styles.presetChipActive]}
+              onPress={() => handlePreset(p)}
               activeOpacity={0.7}
             >
-              <Text style={[styles.pillText, isSelected && styles.pillTextSelected]}>
-                {radius} km
+              <Text style={[styles.presetText, isActive && styles.presetTextActive]}>
+                {p} km
               </Text>
             </TouchableOpacity>
           );
@@ -63,68 +103,111 @@ export const RadiusFilter: React.FC<RadiusFilterProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.surfacePrimary,
-    borderRadius: borderRadius.lg,
     marginHorizontal: spacing.lg,
     marginVertical: spacing.sm,
+    padding: spacing.md,
+    backgroundColor: colors.surfaceCard,
+    borderRadius: borderRadius.lg,
     borderWidth: 1,
     borderColor: colors.borderSubtle,
   },
   headerRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    justifyContent: 'space-between',
+    marginBottom: spacing.xs,
   },
-  labelGroup: {
+  titleGroup: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,
   },
-  label: {
+  radarIconBox: {
+    width: 22,
+    height: 22,
+    borderRadius: borderRadius.xs,
+    backgroundColor: colors.surfaceElevated,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
     ...typography.caption,
-    color: colors.textPrimary,
+    color: colors.textSecondary,
     fontWeight: '600',
   },
   countBadge: {
     backgroundColor: colors.surfaceElevated,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
+    paddingVertical: 3,
     borderRadius: borderRadius.pill,
     borderWidth: 1,
-    borderColor: colors.borderSubtle,
+    borderColor: colors.borderGold,
   },
   countText: {
     ...typography.caption,
     color: colors.amberPrimary,
+    fontWeight: '700',
     fontSize: 11,
   },
-  presetRow: {
+  metricRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginTop: spacing.xs,
+    marginBottom: 2,
+  },
+  metricLabel: {
+    ...typography.caption,
+    color: colors.textMuted,
+  },
+  metricValue: {
+    ...typography.h3,
+    color: colors.textPrimary,
+    fontWeight: '700',
+  },
+  slider: {
+    width: '100%',
+    height: 36,
+  },
+  sliderLimits: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: -4,
+    marginBottom: spacing.sm,
+  },
+  limitText: {
+    ...typography.caption,
+    color: colors.textMuted,
+    fontSize: 10,
+  },
+  presetsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: spacing.xs,
+    borderTopWidth: 1,
+    borderTopColor: colors.borderSubtle,
+    paddingTop: spacing.sm,
   },
-  pill: {
+  presetChip: {
     flex: 1,
-    paddingVertical: spacing.xs + 2,
+    paddingVertical: 4,
     alignItems: 'center',
     borderRadius: borderRadius.pill,
-    backgroundColor: colors.surfaceCard,
+    backgroundColor: colors.surfaceElevated,
     borderWidth: 1,
     borderColor: colors.borderSubtle,
   },
-  pillSelected: {
+  presetChipActive: {
     backgroundColor: colors.amberPrimary,
     borderColor: colors.amberLight,
   },
-  pillText: {
+  presetText: {
     ...typography.caption,
     color: colors.textSecondary,
+    fontSize: 11,
     fontWeight: '600',
   },
-  pillTextSelected: {
+  presetTextActive: {
     color: colors.textOnAmber,
     fontWeight: '700',
   },
