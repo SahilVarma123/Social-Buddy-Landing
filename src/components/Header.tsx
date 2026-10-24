@@ -6,12 +6,14 @@ import { colors, spacing, borderRadius, typography } from '../theme';
 interface HeaderProps {
   locationName?: string;
   radiusKm?: number;
+  eventCount?: number;
   onLocationPress?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   locationName = 'Downtown Arts District',
   radiusKm = 10,
+  eventCount,
   onLocationPress,
 }) => {
   return (
@@ -24,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
         <View style={styles.markerContainer}>
           <Ionicons name="location-sharp" size={16} color={colors.amberPrimary} />
         </View>
-        <View>
+        <View style={styles.textContainer}>
           <View style={styles.titleRow}>
             <Text style={styles.locationText} numberOfLines={1}>
               {locationName}
@@ -32,7 +34,8 @@ export const Header: React.FC<HeaderProps> = ({
             <Ionicons name="chevron-down" size={14} color={colors.textSecondary} />
           </View>
           <Text style={styles.radiusSubtext}>
-            Scanning within <Text style={styles.radiusHighlight}>{radiusKm} km</Text>
+            Scanning <Text style={styles.radiusHighlight}>{radiusKm} km</Text>
+            {eventCount !== undefined ? ` • ${eventCount} active` : ''}
           </Text>
         </View>
       </TouchableOpacity>
@@ -71,6 +74,9 @@ const styles = StyleSheet.create({
     borderColor: colors.borderGold,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  textContainer: {
+    flex: 1,
   },
   titleRow: {
     flexDirection: 'row',

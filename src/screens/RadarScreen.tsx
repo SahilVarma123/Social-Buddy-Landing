@@ -83,39 +83,49 @@ export const RadarScreen: React.FC = () => {
         {/* Nearby Events List in order of distance */}
         <View style={styles.listSection}>
           <Text style={styles.listTitle}>Closest to You</Text>
-          {radarEvents.map((event) => (
-            <TouchableOpacity
-              key={event.id}
-              style={styles.eventRow}
-              onPress={() => navigation.navigate('EventDetail', { eventId: event.id })}
-              activeOpacity={0.8}
-            >
-              <View style={styles.distanceBadge}>
-                <Ionicons name="location" size={14} color={colors.amberPrimary} />
-                <Text style={styles.distanceText}>{formatDistance(event.distanceKm)}</Text>
-              </View>
-
-              <View style={styles.eventInfo}>
-                <Text style={styles.eventTitle} numberOfLines={1}>
-                  {event.title}
-                </Text>
-                <Text style={styles.eventSub} numberOfLines={1}>
-                  {event.venue} • {event.category}
-                </Text>
-              </View>
-
+          {radarEvents.length === 0 ? (
+            <View style={styles.emptyRadar}>
+              <Ionicons name="radio-outline" size={28} color={colors.textMuted} style={styles.emptyRadarIcon} />
+              <Text style={styles.emptyRadarTitle}>No events in {radarRangeKm} km radius</Text>
+              <Text style={styles.emptyRadarSub}>
+                Tap 20 km or 35 km above to expand your proximity scan.
+              </Text>
+            </View>
+          ) : (
+            radarEvents.map((event) => (
               <TouchableOpacity
-                style={styles.bookmarkBtn}
-                onPress={() => toggleSave(event.id)}
+                key={event.id}
+                style={styles.eventRow}
+                onPress={() => navigation.navigate('EventDetail', { eventId: event.id })}
+                activeOpacity={0.8}
               >
-                <Ionicons
-                  name={isSaved(event.id) ? 'bookmark' : 'bookmark-outline'}
-                  size={16}
-                  color={isSaved(event.id) ? colors.amberPrimary : colors.textMuted}
-                />
+                <View style={styles.distanceBadge}>
+                  <Ionicons name="location" size={14} color={colors.amberPrimary} />
+                  <Text style={styles.distanceText}>{formatDistance(event.distanceKm)}</Text>
+                </View>
+
+                <View style={styles.eventInfo}>
+                  <Text style={styles.eventTitle} numberOfLines={1}>
+                    {event.title}
+                  </Text>
+                  <Text style={styles.eventSub} numberOfLines={1}>
+                    {event.venue} • {event.category}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.bookmarkBtn}
+                  onPress={() => toggleSave(event.id)}
+                >
+                  <Ionicons
+                    name={isSaved(event.id) ? 'bookmark' : 'bookmark-outline'}
+                    size={16}
+                    color={isSaved(event.id) ? colors.amberPrimary : colors.textMuted}
+                  />
+                </TouchableOpacity>
               </TouchableOpacity>
-            </TouchableOpacity>
-          ))}
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -293,5 +303,29 @@ const styles = StyleSheet.create({
   },
   bookmarkBtn: {
     padding: spacing.xs,
+  },
+  emptyRadar: {
+    alignItems: 'center',
+    paddingVertical: spacing.xl,
+    paddingHorizontal: spacing.lg,
+    backgroundColor: colors.surfaceCard,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+    marginVertical: spacing.sm,
+  },
+  emptyRadarIcon: {
+    marginBottom: spacing.xs,
+  },
+  emptyRadarTitle: {
+    ...typography.bodyBold,
+    color: colors.textPrimary,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  emptyRadarSub: {
+    ...typography.caption,
+    color: colors.textMuted,
+    textAlign: 'center',
   },
 });

@@ -79,6 +79,7 @@ export const DiscoverScreen: React.FC = () => {
       <Header
         locationName={locationName}
         radiusKm={selectedRadius}
+        eventCount={filteredEvents.length}
         onLocationPress={() => setShowLocationPicker((prev) => !prev)}
       />
 

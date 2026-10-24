@@ -170,7 +170,7 @@ export const EventDetailScreen: React.FC = () => {
             <View style={styles.buddiesHeader}>
               <Ionicons name="people-outline" size={16} color={colors.amberPrimary} />
               <Text style={styles.buddiesTitle}>
-                Community Presence ({attendeeCount} going)
+                Community Presence ({attendeeCount} mock attending)
               </Text>
             </View>
 
@@ -184,13 +184,13 @@ export const EventDetailScreen: React.FC = () => {
                 ))}
                 {rsvpd && (
                   <View style={[styles.buddyChip, styles.youChip]}>
-                    <Text style={styles.youChipText}>You</Text>
+                    <Text style={styles.youChipText}>You (RSVP'd)</Text>
                   </View>
                 )}
               </View>
             ) : (
               <Text style={styles.emptyBuddiesText}>
-                Be the first in your circle to RSVP!
+                Be the first in your circle to save an RSVP!
               </Text>
             )}
           </View>
@@ -209,8 +209,12 @@ export const EventDetailScreen: React.FC = () => {
               <View style={styles.organizerInfo}>
                 <View style={styles.organizerNameRow}>
                   <Text style={styles.organizerName}>{event.organizer.name}</Text>
-                  {event.organizer.isVerified && (
+                  {event.organizer.isVerified ? (
                     <Ionicons name="checkmark-circle" size={14} color={colors.amberPrimary} />
+                  ) : (
+                    <View style={styles.sampleTag}>
+                      <Text style={styles.sampleTagText}>Demo Host</Text>
+                    </View>
                   )}
                 </View>
                 <Text style={styles.organizerRole}>{event.organizer.role || 'Host'}</Text>
@@ -223,7 +227,7 @@ export const EventDetailScreen: React.FC = () => {
             <View style={styles.demoNoticeCard}>
               <Ionicons name="information-circle-outline" size={18} color={colors.amberLight} />
               <Text style={styles.demoNoticeText}>
-                This is a seeded demonstration listing for the VecnaVerse Hackathon showcasing Hyperlocal Event Discovery.
+                Notice: This is a demonstration listing for the VecnaVerse Hackathon showcasing Hyperlocal Event Discovery. RSVPs are stored locally on your device for schedule tracking.
               </Text>
             </View>
           )}
@@ -244,12 +248,12 @@ export const EventDetailScreen: React.FC = () => {
             activeOpacity={0.85}
           >
             <Ionicons
-              name={rsvpd ? 'checkmark-circle' : 'ticket-outline'}
+              name={rsvpd ? 'checkmark-circle' : 'calendar-outline'}
               size={18}
               color={rsvpd ? colors.amberPrimary : colors.textOnAmber}
             />
             <Text style={[styles.rsvpButtonText, rsvpd && styles.rsvpButtonTextActive]}>
-              {rsvpd ? "I'm Attending" : 'RSVP / Join'}
+              {rsvpd ? "RSVP Active (Local)" : "Save Device RSVP"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -562,6 +566,20 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textMuted,
     marginTop: 2,
+  },
+  sampleTag: {
+    backgroundColor: colors.surfaceElevated,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: borderRadius.pill,
+    borderWidth: 1,
+    borderColor: colors.borderSubtle,
+    marginLeft: 4,
+  },
+  sampleTagText: {
+    ...typography.micro,
+    color: colors.textMuted,
+    fontSize: 9,
   },
   demoNoticeCard: {
     flexDirection: 'row',
