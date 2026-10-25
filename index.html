@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Buddy — Hyperlocal Discovery & Community Events Mobile App</title>
+  
+  <!-- SEO & Social Meta Tags -->
+  <meta name="description" content="Discover curated agentic AI hackathons, rooftop acoustic jams, and intimate builder meetups in your city with zero algorithm spam. Powered by Social Buddy hyperlocal radar.">
+  <meta name="keywords" content="Social Buddy, hyperlocal events, hackathons, AI sprints, builder meetups, proximity radar, secret gigs, Bangalore events, Mumbai events">
+  <meta name="theme-color" content="#07080B">
+  
+  <!-- Open Graph / Twitter Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Social Buddy — Hyperlocal Discovery & Community Events">
+  <meta property="og:description" content="Experience what's happening right around you with real-time proximity radar and zero algorithm spam.">
+  <meta property="og:image" content="assets/app-feed.jpg">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%2307080B' stroke='%23FF6B00' stroke-width='4'/><polygon points='50,20 62,50 50,42 38,50' fill='%23FF5400'/><polygon points='50,80 62,50 50,58 38,50' fill='%23FFC837'/><circle cx='50' cy='50' r='5' fill='%23FFFFFF'/></svg>">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="obsidian-theme">
+  <!-- Cyber Glow Ambient Mesh Background -->
+  <div class="ambient-glow glow-top-left" aria-hidden="true"></div>
+  <div class="ambient-glow glow-top-right" aria-hidden="true"></div>
+  <div class="ambient-glow glow-center" aria-hidden="true"></div>
+  <div class="ambient-glow glow-bottom" aria-hidden="true"></div>
+  <div class="cyber-grid-overlay" aria-hidden="true"></div>
+
+  <!-- Sticky Glass Navbar -->
+  <header class="navbar-wrapper">
+    <nav class="navbar glass-card" id="main-nav" aria-label="Main Navigation">
+      <a href="#" class="brand-logo" id="nav-brand-logo">
+        <span class="logo-compass-icon" aria-hidden="true">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="17" stroke="url(#logo-grad)" stroke-width="2" fill="rgba(18, 22, 32, 0.9)"/>
+            <polygon points="18,6 23,18 18,15 13,18" fill="url(#logo-grad-accent)"/>
+            <polygon points="18,30 23,18 18,21 13,18" fill="#FFC837"/>
+            <circle cx="18" cy="18" r="2.5" fill="#FFFFFF"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="36" y2="36">
+                <stop offset="0%" stop-color="#FF5400"/>
+                <stop offset="100%" stop-color="#FFC837"/>
+              </linearGradient>
+              <linearGradient id="logo-grad-accent" x1="13" y1="6" x2="23" y2="18">
+                <stop offset="0%" stop-color="#FF5400"/>
+                <stop offset="100%" stop-color="#FF8E00"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        <span class="logo-text">Social <span class="gradient-text">Buddy</span></span>
+      </a>
+
+      <div class="nav-links" id="nav-menu">
+        <a href="#features" class="nav-item">Features</a>
+        <a href="#radar" class="nav-item">Radar</a>
+        <a href="#hackathons" class="nav-item">Hackathons</a>
+        <a href="#showcase" class="nav-item">Showcase</a>
+        <a href="#metrics" class="nav-item">Community</a>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-primary pill-btn deep-link-trigger" id="nav-launch-btn" onclick="launchSocialBuddy('navbar')">
+          <span class="btn-icon">📲</span>
+          <span class="btn-text">Launch App</span>
+          <span class="btn-glow-ring"></span>
+        </button>
+        <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="container hero-container">
+        
+        <!-- Hero Content Column -->
+        <div class="hero-content">
+          <div class="hero-badge-pill" data-aos="fade-up">
+            <span class="pulse-indicator"></span>
+            <span class="badge-fire-icon">🔥</span>
+            <span class="badge-text">Hyperlocal Tech &amp; Secret Community Hub</span>
+          </div>
+
+          <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">
+            Experience What’s <br>
+            <span class="gradient-text glow-text">Happening Right Around You.</span>
+          </h1>
+
+          <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+            Discover curated agentic AI hackathons, rooftop acoustic jams, and intimate builder meetups in your city with zero algorithm spam. Verified real-world connections within your neighborhood radius.
+          </p>
+
+          <!-- Real-time Live Proximity Ticker -->
+          <div class="live-activity-bar glass-card" data-aos="fade-up" data-aos-delay="250">
+            <div class="live-beacon">
+              <span class="beacon-dot"></span>
+              <span class="beacon-wave"></span>
+            </div>
+            <div class="live-stats-text">
+              <strong>42 Active Builders</strong> online in <span class="highlight-tag">&lt; 5km radius</span>
+            </div>
+            <div class="live-event-chip">
+              <span class="event-chip-icon">⚡</span>
+              <span>Next sprint: <strong>React Native 120 FPS</strong> (2h away)</span>
+            </div>
+          </div>
+
+          <!-- Hero CTAs -->
+          <div class="hero-cta-group" data-aos="fade-up" data-aos-delay="300">
+            <button type="button" class="btn-primary btn-large deep-link-trigger" id="hero-main-cta" onclick="launchSocialBuddy('hero_primary')">
+              <span class="btn-icon">📲</span>
+              <span class="btn-text">Open in Social Buddy App</span>
+              <span class="btn-shimmer"></span>
+            </button>
+            <a href="#radar" class="btn-secondary btn-large" id="hero-secondary-cta">
+              <span class="btn-icon">📡</span>
+              <span>Try Live Radar Simulator</span>
+            </a>
+          </div>
+
+          <!-- Deep Link Capability Badges -->
+          <div class="platform-meta-row" data-aos="fade-up" data-aos-delay="350">
+            <div class="platform-tag">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993s-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993s-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5802 8.4103 13.8443 8.125 12 8.125c-1.8443 0-3.5802.2853-5.1368.8247L4.8409 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.7497h24c-.3432-4.0908-2.6889-7.563-6.1185-9.4283"/></svg>
+              <span>Android Intent: <code>com.socialbuddy.app</code></span>
+            </div>
+            <div class="platform-divider">•</div>
+            <div class="platform-tag">
+              <span class="deep-link-symbol">🔗</span>
+              <span>URI: <code>socialbuddy://discover</code></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Visual: Floating 3D Device & Glass Preview -->
+        <div class="hero-visual" data-aos="fade-left" data-aos-delay="200">
+          <div class="phone-composition-hero">
+            <!-- Back Glow -->
+            <div class="phone-glow-mesh"></div>
+
+            <!-- Main Smartphone Mockup (Feed) -->
+            <div class="smartphone-frame hero-phone">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-dynamic-island">
+                <span class="island-camera"></span>
+                <span class="island-sensor"></span>
+              </div>
+              <div class="phone-screen-container">
+                <img src="assets/app-feed.jpg" alt="Social Buddy Mobile App Live Feed Interface" class="phone-screen-img" loading="eager">
+                <div class="screen-glare-overlay"></div>
+              </div>
+            </div>
+
+            <!-- Overlapping Floating Glass Card: Organizer Profile -->
+            <div class="floating-badge-card organizer-floating-card glass-card">
+              <div class="floating-card-header">
+                <img src="assets/organizer-profile.jpg" alt="Organizer Profile Screenshot" class="floating-thumb">
+                <div class="floating-info">
+                  <div class="floating-verified-pill">
+                    <span class="check-icon">✓</span> Verified Organizer
+                  </div>
+                  <div class="floating-title">EarthTech Open Network</div>
+                  <div class="floating-sub">Sustainability &amp; Dev Meetups</div>
+                </div>
+              </div>
+              <div class="floating-badge-footer">
+                <span class="badge-dot green"></span>
+                <span>Direct Mobile Access Active</span>
+              </div>
+            </div>
+
+            <!-- Overlapping Floating Glass Tag: Instant Intent -->
+            <div class="floating-badge-card intent-floating-card glass-card">
+              <div class="intent-header">
+                <span class="intent-icon">⚡</span>
+                <div>
+                  <div class="intent-title">Instant App Switch</div>
+                  <div class="intent-sub">Zero app store latency</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Social Proof / Community Metrics Strip -->
+    <section class="metrics-section" id="metrics">
+      <div class="container">
+        <div class="metrics-grid glass-card">
+          <div class="metric-item" data-aos="zoom-in" data-aos-delay="100">
+            <div class="metric-value-wrap">
+              <span class="metric-number" data-count="500">500</span><span class="metric-suffix">+</span>
+            </div>
+            <div class="metric-label">Secret Gatherings</div>
+            <div class="metric-desc">Curated tech sprints, jams &amp; meetups</div>
+          </div>
+
+          <div class="metric-divider"></div>
+
+          <div class="metric-item" data-aos="zoom-in" data-aos-delay="200">
+            <div class="metric-value-wrap">
+              <span class="metric-number" data-count="12">12</span><span class="metric-suffix">k+</span>
+            </div>
+            <div class="metric-label">Active City Builders</div>
+            <div class="metric-desc">Founders, engineers &amp; creative makers</div>
+          </div>
+
+          <div class="metric-divider"></div>
+
+          <div class="metric-item" data-aos="zoom-in" data-aos-delay="300">
+            <div class="metric-value-wrap">
+              <span class="metric-number">100</span><span class="metric-suffix">%</span>
+            </div>
+            <div class="metric-label">Privacy &amp; Masked Contact</div>
+            <div class="metric-desc">Zero phone number leaks or spam lists</div>
+          </div>
+
+          <div class="metric-divider"></div>
+
+          <div class="metric-item" data-aos="zoom-in" data-aos-delay="400">
+            <div class="metric-value-wrap">
+              <span class="metric-prefix">&lt;</span><span class="metric-number">2</span><span class="metric-suffix">km</span>
+            </div>
+            <div class="metric-label">Real-time Proximity</div>
+            <div class="metric-desc">Dynamic geolocation-based secret radar</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 Interactive Pop-Up Feature / Benefit Cards -->
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-badge">✨ Interactive Pop-Up Engine</div>
+          <h2 class="section-title">Built for Real Life. Powered by In-App Pop-Ups.</h2>
+          <p class="section-subtitle">
+            Every feature in Social Buddy is engineered with lightning-fast interactive modals and bottom sheets. Click any card below to launch the authentic in-app pop-up preview!
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Card 1: Hyperlocal Proximity Radar -->
+          <div class="feature-card glass-card" onclick="openFeatureModal('radar')" tabindex="0" role="button" aria-label="Open Hyperlocal Proximity Radar Pop-Up">
+            <div class="card-glow-layer"></div>
+            <div class="card-header-row">
+              <div class="feature-icon-box">
+                <span class="feature-icon">📡</span>
+              </div>
+              <span class="popup-avail-badge">🪟 In-App Pop-Up</span>
+            </div>
+            <div class="feature-meta-tag">Real-Time Geofence</div>
+            <h3 class="feature-title">Hyperlocal Proximity Radar</h3>
+            <p class="feature-snippet">
+              Scans secret events and tech hubs within a customizable 2km to 25km radius in real-time. Never miss an underground meetup down your street.
+            </p>
+            
+            <div class="card-screenshot-preview">
+              <img src="assets/app-feed.jpg" alt="Proximity Radar Screen Preview" class="card-thumb-img">
+              <div class="preview-overlay-btn">Click to Expand Pop-Up 🔍</div>
+            </div>
+
+            <div class="card-interactive-footer">
+              <button type="button" class="btn-popup-action" onclick="event.stopPropagation(); openFeatureModal('radar')">
+                <span>Launch Radar Pop-Up 🪟</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2: Curated AI Hackathons & Secret Gigs -->
+          <div class="feature-card glass-card" onclick="openFeatureModal('hackathons')" tabindex="0" role="button" aria-label="Open Curated AI Hackathons Pop-Up">
+            <div class="card-glow-layer"></div>
+            <div class="card-header-row">
+              <div class="feature-icon-box">
+                <span class="feature-icon">⚡</span>
+              </div>
+              <span class="popup-avail-badge">🪟 In-App Pop-Up</span>
+            </div>
+            <div class="feature-meta-tag">Verified Experiences</div>
+            <h3 class="feature-title">Curated AI Hackathons &amp; Secret Gigs</h3>
+            <p class="feature-snippet">
+              Handpicked Agentic AI sprints, Web3 buildathons, and underground musical jams with vetted creators and zero corporate spam.
+            </p>
+
+            <div class="card-screenshot-preview">
+              <img src="assets/event-details.jpg" alt="Event Details Screen Preview" class="card-thumb-img">
+              <div class="preview-overlay-btn">Click to Expand Pop-Up 🔍</div>
+            </div>
+
+            <div class="card-interactive-footer">
+              <button type="button" class="btn-popup-action" onclick="event.stopPropagation(); openFeatureModal('hackathons')">
+                <span>Launch Sprint Pop-Up 🪟</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 3: Cryptographic QR Passes & Privacy -->
+          <div class="feature-card glass-card" onclick="openFeatureModal('qr_passes')" tabindex="0" role="button" aria-label="Open Cryptographic QR Passes Pop-Up">
+            <div class="card-glow-layer"></div>
+            <div class="card-header-row">
+              <div class="feature-icon-box">
+                <span class="feature-icon">🛡️</span>
+              </div>
+              <span class="popup-avail-badge">🪟 In-App Pop-Up</span>
+            </div>
+            <div class="feature-meta-tag">End-to-End Privacy</div>
+            <h3 class="feature-title">Cryptographic QR Passes &amp; Privacy</h3>
+            <p class="feature-snippet">
+              Zero phone number leaks. Dynamic QR check-in tickets that verify instantly offline so you own your identity and personal data.
+            </p>
+
+            <div class="card-screenshot-preview">
+              <img src="assets/event-details.jpg" alt="Pass Verification Preview" class="card-thumb-img">
+              <div class="preview-overlay-btn">Click to Expand Pop-Up 🔍</div>
+            </div>
+
+            <div class="card-interactive-footer">
+              <button type="button" class="btn-popup-action" onclick="event.stopPropagation(); openFeatureModal('qr_passes')">
+                <span>Launch Pass Pop-Up 🪟</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 4: Creator & Host Control Room -->
+          <div class="feature-card glass-card" onclick="openFeatureModal('host_control')" tabindex="0" role="button" aria-label="Open Organizer Profile Pop-Up">
+            <div class="card-glow-layer"></div>
+            <div class="card-header-row">
+              <div class="feature-icon-box">
+                <span class="feature-icon">👑</span>
+              </div>
+              <span class="popup-avail-badge highlight">🪟 Featured Pop-Up</span>
+            </div>
+            <div class="feature-meta-tag">Community Verified Host</div>
+            <h3 class="feature-title">Creator &amp; Host Control Room</h3>
+            <p class="feature-snippet">
+              Manage guest lists, cap RSVP limits, and scan entry tickets with a 1-second camera scanner right from your mobile device.
+            </p>
+
+            <div class="card-screenshot-preview">
+              <img src="assets/organizer-profile.jpg" alt="Organizer Profile Pop-Up Screenshot" class="card-thumb-img">
+              <div class="preview-overlay-btn">Click to Expand Pop-Up 🔍</div>
+            </div>
+
+            <div class="card-interactive-footer">
+              <button type="button" class="btn-popup-action" onclick="event.stopPropagation(); openFeatureModal('host_control')">
+                <span>Launch Organizer Pop-Up 🪟</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dedicated In-App Pop-Up Screenshot Marketing Showcase -->
+        <div class="popup-showcase-strip glass-card">
+          <div class="strip-header">
+            <div class="strip-badge">📸 In-App Pop-Up Gallery</div>
+            <h3 class="strip-title">Explore The Authentic Mobile Pop-Up Screens</h3>
+            <p class="strip-desc">Click any of the genuine app modals below to trigger the interactive full-screen pop-up modal directly in your browser:</p>
+          </div>
+          
+          <div class="strip-grid">
+            <div class="strip-card" onclick="openFeatureModal('host_control')">
+              <div class="strip-img-wrap">
+                <img src="assets/organizer-profile.jpg" alt="Organizer Profile Pop-Up Modal">
+                <span class="strip-tag">Organizer Pop-Up</span>
+              </div>
+              <div class="strip-info">
+                <h4>EarthTech Open Network Pop-Up</h4>
+                <p>Community Verified Organizer badge, direct Contact Host and Website actions.</p>
+                <button class="strip-btn">Preview Pop-Up ↗</button>
+              </div>
+            </div>
+
+            <div class="strip-card" onclick="openFeatureModal('hackathons')">
+              <div class="strip-img-wrap">
+                <img src="assets/event-details.jpg" alt="Event Registration Screen">
+                <span class="strip-tag">Event Pass Sheet</span>
+              </div>
+              <div class="strip-info">
+                <h4>Mobile Dev Olympics Registration</h4>
+                <p>120 FPS gesture-driven sprint with free instant ticket generation.</p>
+                <button class="strip-btn">Preview Pop-Up ↗</button>
+              </div>
+            </div>
+
+            <div class="strip-card" onclick="openFeatureModal('radar')">
+              <div class="strip-img-wrap">
+                <img src="assets/app-feed.jpg" alt="Live Radar Feed">
+                <span class="strip-tag">Feed &amp; Radar Sheet</span>
+              </div>
+              <div class="strip-info">
+                <h4>Hyperlocal Discovery Feed</h4>
+                <p>2km, 5km, Any Radius real-time neighborhood event cards.</p>
+                <button class="strip-btn">Preview Pop-Up ↗</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Interactive Mobile App Interface Showcase (Dual Phone Mockup) -->
+    <section class="showcase-section" id="showcase">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-badge">📱 Inside Social Buddy</div>
+          <h2 class="section-title">Designed for Immediate Action.</h2>
+          <p class="section-subtitle">
+            Take a deep dive into the native mobile interface built for lightning-fast event discovery and seamless offline check-ins.
+          </p>
+
+          <!-- Screen Switcher Pills -->
+          <div class="showcase-pill-switchers">
+            <button class="pill-filter active" onclick="switchShowcaseFocus('all')">Complete App Suite</button>
+            <button class="pill-filter" onclick="switchShowcaseFocus('feed')">Discover Feed</button>
+            <button class="pill-filter" onclick="switchShowcaseFocus('event')">Event Pass &amp; Details</button>
+            <button class="pill-filter" onclick="switchShowcaseFocus('host')">Organizer Verification</button>
+          </div>
+        </div>
+
+        <!-- Dual Smartphone Showcase Stage -->
+        <div class="dual-phones-wrapper">
+          
+          <!-- Phone 1: Discover Feed -->
+          <div class="phone-showcase-card" id="showcase-card-feed">
+            <div class="phone-showcase-label">
+              <span class="dot-status live"></span> Phone 01: Discover &amp; Radius Feed
+            </div>
+            
+            <div class="smartphone-frame">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-dynamic-island">
+                <span class="island-camera"></span>
+                <span class="island-sensor"></span>
+              </div>
+              <div class="phone-screen-container">
+                <img src="assets/app-feed.jpg" alt="Social Buddy Discover Feed - Aura Bloom Synthwave Echoes" class="phone-screen-img">
+                <div class="screen-glare-overlay"></div>
+                <!-- Hotspot Tooltips -->
+                <div class="hotspot-pin pin-1" onclick="showHotspotInfo('Radius filter: adjust from 2km to 25km with 1 tap')">
+                  <span class="hotspot-pulse"></span>
+                  <span class="hotspot-dot">1</span>
+                </div>
+                <div class="hotspot-pin pin-2" onclick="showHotspotInfo('Aura Bloom live event card with real participant count')">
+                  <span class="hotspot-pulse"></span>
+                  <span class="hotspot-dot">2</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="phone-caption glass-card">
+              <h4>Real-Time Proximity Feed</h4>
+              <p>Filter by <strong>All</strong>, <strong>Music</strong>, <strong>Hackathons</strong>, and <strong>Radius (2km, 5km, Any)</strong> with immediate zero-latency rendering.</p>
+              <div class="caption-badges">
+                <span class="badge-chip">📍 868 km / Local Toggle</span>
+                <span class="badge-chip">📅 Dec 21 Live</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center Floating Feature Pill: Organizer Modal Preview -->
+          <div class="center-feature-callout glass-card" id="showcase-card-host">
+            <div class="host-preview-card">
+              <div class="host-modal-badge">
+                <span class="shield-icon">🛡️</span> Direct Native Component
+              </div>
+              <img src="assets/organizer-profile.jpg" alt="EarthTech Open Network Organizer Profile" class="host-img-preview">
+              <div class="host-preview-details">
+                <div class="verified-tag">✓ COMMUNITY VERIFIED ORGANIZER</div>
+                <h3>EarthTech Open Network</h3>
+                <p>Bringing communities together through experiential developer meetups &amp; creative gatherings.</p>
+                <div class="host-btn-row">
+                  <button class="mini-btn deep-link-trigger" onclick="launchSocialBuddy('host_preview')">Contact Host ✉️</button>
+                  <button class="mini-btn secondary" onclick="launchSocialBuddy('host_website')">Website 🌐</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone 2: Event Details & Pass -->
+          <div class="phone-showcase-card" id="showcase-card-event">
+            <div class="phone-showcase-label">
+              <span class="dot-status live"></span> Phone 02: Event Detail &amp; Pass
+            </div>
+            
+            <div class="smartphone-frame">
+              <div class="phone-speaker-slit"></div>
+              <div class="phone-dynamic-island">
+                <span class="island-camera"></span>
+                <span class="island-sensor"></span>
+              </div>
+              <div class="phone-screen-container">
+                <img src="assets/event-details.jpg" alt="Social Buddy Mobile Dev Olympics React Native Sprint Event Screen" class="phone-screen-img">
+                <div class="screen-glare-overlay"></div>
+                <!-- Hotspot Tooltip -->
+                <div class="hotspot-pin pin-3" onclick="showHotspotInfo('Verified Real-World badge: offline checked venue')">
+                  <span class="hotspot-pulse"></span>
+                  <span class="hotspot-dot">3</span>
+                </div>
+                <div class="hotspot-pin pin-4" onclick="showHotspotInfo('1-Tap Registration with offline cryptographic pass')">
+                  <span class="hotspot-pulse"></span>
+                  <span class="hotspot-dot">4</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="phone-caption glass-card">
+              <h4>Mobile Dev Olympics: Sprint</h4>
+              <p>Live event registration with instant direction navigation to CodeCraft Studio Tech Hub &amp; zero-cost check-in.</p>
+              <div class="caption-badges">
+                <span class="badge-chip">✓ Verified Real-World</span>
+                <span class="badge-chip orange">Free Admission</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Proximity Radar Simulator -->
+    <section class="radar-section" id="radar">
+      <div class="container">
+        <div class="radar-layout glass-card">
+          
+          <div class="radar-content-col">
+            <div class="section-badge">📡 Real-Time Geofence Tech</div>
+            <h2 class="section-title">See What’s Pulsing Right Near You</h2>
+            <p class="radar-description">
+              Social Buddy's Hyperlocal Radar constantly listens for active gatherings, code sprints, and creative jams within your chosen perimeter. Switch radiuses to see the live city map adapt.
+            </p>
+
+            <!-- Radar Interactive Radius Controller -->
+            <div class="radius-controller-box">
+              <label class="controller-label">Select Discovery Radius:</label>
+              <div class="radius-button-group">
+                <button type="button" class="radius-btn active" data-radius="2" onclick="setSimulatedRadius(2)">2 km</button>
+                <button type="button" class="radius-btn" data-radius="5" onclick="setSimulatedRadius(5)">5 km</button>
+                <button type="button" class="radius-btn" data-radius="15" onclick="setSimulatedRadius(15)">15 km</button>
+                <button type="button" class="radius-btn" data-radius="25" onclick="setSimulatedRadius(25)">25 km (Any)</button>
+              </div>
+            </div>
+
+            <!-- Simulated Event List for Selected Radius -->
+            <div class="radar-event-list" id="radar-event-list">
+              <!-- Dynamically populated via script -->
+            </div>
+
+            <div class="radar-cta-wrap">
+              <button type="button" class="btn-primary deep-link-trigger" onclick="launchSocialBuddy('radar_cta')">
+                <span>Open Live Radar in App 🧭</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Radar Visual Display Screen -->
+          <div class="radar-screen-col">
+            <div class="radar-display" id="radar-display">
+              <!-- Concentric Distance Circles -->
+              <div class="radar-circle circle-25">
+                <span class="radar-distance-tag">25 km</span>
+              </div>
+              <div class="radar-circle circle-15">
+                <span class="radar-distance-tag">15 km</span>
+              </div>
+              <div class="radar-circle circle-5">
+                <span class="radar-distance-tag">5 km</span>
+              </div>
+              <div class="radar-circle circle-2">
+                <span class="radar-distance-tag">2 km</span>
+              </div>
+
+              <!-- Radar Axis Lines -->
+              <div class="radar-axis axis-horizontal"></div>
+              <div class="radar-axis axis-vertical"></div>
+
+              <!-- Rotating Scanning Beam -->
+              <div class="radar-sweep-beam"></div>
+
+              <!-- Center User Dot -->
+              <div class="radar-center-blip">
+                <span class="user-pulse"></span>
+                <span class="user-dot"></span>
+                <span class="user-label">You</span>
+              </div>
+
+              <!-- Interactive Event Blips on Radar (Populated & placed dynamically) -->
+              <div class="radar-blip-container" id="radar-blips">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Hackathons & Curated Sprints Spotlight -->
+    <section class="hackathons-section" id="hackathons">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-badge">⚡ Builder Ecosystem</div>
+          <h2 class="section-title">Zero Algorithm Spam. 100% Signal.</h2>
+          <p class="section-subtitle">
+            From overnight Agentic AI sprints to intimate rooftop jams, every gathering is verified to ensure real-world attendance.
+          </p>
+        </div>
+
+        <div class="sprint-cards-grid">
+          <!-- Sprint Card 1 -->
+          <div class="sprint-card glass-card">
+            <div class="sprint-status-bar">
+              <span class="status-tag hackathon">HACKATHONS</span>
+              <span class="status-tag verified">✓ VERIFIED REAL-WORLD</span>
+              <span class="distance-pill">📍 1.2 km away</span>
+            </div>
+            <h3 class="sprint-title">Mobile Dev Olympics: React Native Sprint</h3>
+            <p class="sprint-desc">
+              Build fluid 120 FPS gesture-driven mobile apps with local offline storage alongside top mobile engineers.
+            </p>
+            <div class="sprint-meta-list">
+              <div class="sprint-meta-item">
+                <span class="meta-icon">📅</span>
+                <span>Friday, Jan 22 • 8:30 AM – 8:30 PM IST</span>
+              </div>
+              <div class="sprint-meta-item">
+                <span class="meta-icon">🏢</span>
+                <span>CodeCraft Studio Tech Hub, Whitefield</span>
+              </div>
+              <div class="sprint-meta-item">
+                <span class="meta-icon">🎟️</span>
+                <span>Admission: <strong class="text-orange">Free</strong></span>
+              </div>
+            </div>
+            <div class="sprint-action-row">
+              <button class="btn-primary full-width deep-link-trigger" onclick="launchSocialBuddy('sprint_react_native')">
+                Register in Social Buddy 📲
+              </button>
+            </div>
+          </div>
+
+          <!-- Sprint Card 2 -->
+          <div class="sprint-card glass-card">
+            <div class="sprint-status-bar">
+              <span class="status-tag music">MUSIC &amp; GIGS</span>
+              <span class="status-tag verified">✓ VERIFIED REAL-WORLD</span>
+              <span class="distance-pill">📍 2.8 km away</span>
+            </div>
+            <h3 class="sprint-title">Aura Bloom: Synthwave Echoes</h3>
+            <p class="sprint-desc">
+              Underground electronic ambient synthwave live session with modular synths and visual projection mapping.
+            </p>
+            <div class="sprint-meta-list">
+              <div class="sprint-meta-item">
+                <span class="meta-icon">📅</span>
+                <span>Monday, Dec 21 • 7:00 PM – Midnight</span>
+              </div>
+              <div class="sprint-meta-item">
+                <span class="meta-icon">🏢</span>
+                <span>Velvet Horizon Club, Koramangala</span>
+              </div>
+              <div class="sprint-meta-item">
+                <span class="meta-icon">👥</span>
+                <span>Voted <strong>890 Participants</strong></span>
+              </div>
+            </div>
+            <div class="sprint-action-row">
+              <button class="btn-primary full-width deep-link-trigger" onclick="launchSocialBuddy('gig_aura_bloom')">
+                Join Guestlist in App 📲
+              </button>
+            </div>
+          </div>
+
+          <!-- Sprint Card 3 -->
+          <div class="sprint-card glass-card">
+            <div class="sprint-status-bar">
+              <span class="status-tag ai">AGENTIC AI</span>
+              <span class="status-tag verified">✓ COMMUNITY VERIFIED</span>
+              <span class="distance-pill">📍 4.1 km away</span>
+            </div>
+            <h3 class="sprint-title">Autonomous Agentic Swarms Build-Off</h3>
+            <p class="sprint-desc">
+              Intimate 4-member teams hacking autonomous MCP server workflows, multimodal vision agents, and local LLMs.
+            </p>
+            <div class="sprint-meta-list">
+              <div class="sprint-meta-item">
+                <span class="meta-icon">📅</span>
+                <span>Saturday, Feb 06 • 10:00 AM – 9:00 PM</span>
+              </div>
+              <div class="sprint-meta-item">
+                <span class="meta-icon">🏢</span>
+                <span>EarthTech Open Hub, Indiranagar</span>
+              </div>
+              <div class="sprint-meta-item">
+                <span class="meta-icon">🛡️</span>
+                <span>Organizer: <strong>EarthTech Network</strong></span>
+              </div>
+            </div>
+            <div class="sprint-action-row">
+              <button class="btn-primary full-width deep-link-trigger" onclick="launchSocialBuddy('sprint_agentic_ai')">
+                Claim Builder Pass in App 📲
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom High-Converting Call to Action Banner -->
+    <section class="bottom-cta-section" id="download">
+      <div class="container">
+        <div class="bottom-cta-card glass-card">
+          <div class="cta-mesh-glow" aria-hidden="true"></div>
+          
+          <div class="cta-content-wrapper text-center">
+            <div class="cta-pill-tag">
+              <span class="pill-radar-icon">🧭</span>
+              <span>Direct Mobile Launch</span>
+            </div>
+
+            <h2 class="cta-heading">Your City is Waiting. Step Inside.</h2>
+            
+            <p class="cta-subheading">
+              Tap below to jump straight into your local feed in the Social Buddy mobile app. If you're on desktop, we’ll display an instant launch QR code for your mobile device.
+            </p>
+
+            <div class="cta-button-container">
+              <!-- Primary Deep Link Launch Button -->
+              <button type="button" class="btn-primary btn-cta-massive deep-link-trigger" id="bottom-launch-btn" onclick="launchSocialBuddy('bottom_banner')">
+                <span class="btn-icon">🧭</span>
+                <span class="btn-text">Open Social Buddy App</span>
+                <span class="btn-badge-hot">INSTANT LAUNCH</span>
+              </button>
+            </div>
+
+            <!-- Deep linking technical indicators & verification -->
+            <div class="cta-spec-badges">
+              <div class="spec-badge">
+                <span class="spec-icon">⚡</span>
+                <span>Target Package: <code>com.socialbuddy.app</code></span>
+              </div>
+              <div class="spec-badge">
+                <span class="spec-icon">🔗</span>
+                <span>Direct Intent: <code>socialbuddy://discover</code></span>
+              </div>
+              <div class="spec-badge">
+                <span class="spec-icon">🛡️</span>
+                <span>Zero Latency Deep Link</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modern Responsive Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-top-row">
+        
+        <div class="footer-brand-col">
+          <a href="#" class="brand-logo footer-logo">
+            <span class="logo-compass-icon small">🧭</span>
+            <span class="logo-text">Social <span class="gradient-text">Buddy</span></span>
+          </a>
+          <p class="footer-tagline">
+            The hyperlocal discovery and community events mobile app engineered for authentic human connections and zero algorithm spam.
+          </p>
+          <div class="app-status-indicator">
+            <span class="dot-online"></span>
+            <span>Mobile Deep-Link Gateway: <strong>Operational</strong></span>
+          </div>
+        </div>
+
+        <div class="footer-links-col">
+          <h4 class="footer-col-title">Explore</h4>
+          <ul class="footer-links-list">
+            <li><a href="#features">Proximity Radar</a></li>
+            <li><a href="#hackathons">AI Hackathons</a></li>
+            <li><a href="#showcase">Secret Gigs</a></li>
+            <li><a href="#radar">Live Geofence</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4 class="footer-col-title">Community &amp; Safety</h4>
+          <ul class="footer-links-list">
+            <li><a href="#features" onclick="openFeatureModal('qr_passes')">Cryptographic Passes</a></li>
+            <li><a href="#features" onclick="openFeatureModal('host_control')">Host Verification</a></li>
+            <li><a href="#" onclick="alert('Community Guidelines: Strictly zero commercial spam, respectful IRL gatherings, and verified locations.')">Community Guidelines</a></li>
+            <li><a href="#" onclick="alert('Privacy Manifesto: No contact book harvesting, zero tracking pixels, offline-verifiable QR tokens.')">Privacy Manifesto</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4 class="footer-col-title">App Redirect</h4>
+          <p class="footer-direct-desc">Click below anytime to open your installed APK on Android or iOS.</p>
+          <button class="footer-direct-btn deep-link-trigger" onclick="launchSocialBuddy('footer')">
+            <span>Open SOCIAL-BUDDY App</span> 📲
+          </button>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-row">
+        <div class="copyright-text">
+          &copy; 2026 Social Buddy Mobile Ecosystem. All rights reserved. Built for builders, creators, and cities.
+        </div>
+        <div class="footer-secondary-links">
+          <span>Custom Scheme: <code>socialbuddy://</code></span>
+          <span>•</span>
+          <span>Android Intent Ready</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= MODALS & POPUPS ================= -->
+
+  <!-- Desktop QR Launch Modal -->
+  <div class="modal-backdrop" id="desktop-qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title" style="display: none;">
+    <div class="modal-card glass-card qr-modal-card">
+      <button class="modal-close-btn" onclick="closeDesktopQRModal()" aria-label="Close modal">&times;</button>
+      
+      <div class="qr-modal-header text-center">
+        <div class="qr-app-icon">🧭</div>
+        <h3 id="qr-modal-title" class="qr-modal-title">Open in Social Buddy App</h3>
+        <p class="qr-modal-subtitle">
+          Scan this code with your mobile camera to launch Social Buddy directly on your phone.
+        </p>
+      </div>
+
+      <div class="qr-code-wrapper">
+        <div class="qr-code-box" id="qr-code-container">
+          <!-- Dynamic high-fidelity SVG QR Code injected here -->
+        </div>
+        <div class="qr-scanner-frame-corners">
+          <span class="corner tl"></span>
+          <span class="corner tr"></span>
+          <span class="corner bl"></span>
+          <span class="corner br"></span>
+        </div>
+      </div>
+
+      <div class="qr-modal-footer">
+        <div class="qr-meta-box">
+          <div class="qr-meta-item">
+            <span class="check-circle">✓</span>
+            <span>Direct Deep Link: <code>socialbuddy://discover</code></span>
+          </div>
+          <div class="qr-meta-item">
+            <span class="check-circle">✓</span>
+            <span>Target APK: <code>com.socialbuddy.app</code></span>
+          </div>
+        </div>
+
+        <div class="qr-action-buttons">
+          <button type="button" class="btn-secondary btn-small" onclick="testDirectScheme()">
+            <span>Try Scheme Directly</span>
+          </button>
+          <button type="button" class="btn-secondary btn-small" onclick="copyDeepLink()">
+            <span id="copy-text">Copy Deep Link</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Detail Pop-Up Modal -->
+  <div class="modal-backdrop" id="feature-detail-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title" style="display: none;">
+    <div class="modal-card glass-card feature-modal-card">
+      <button class="modal-close-btn" onclick="closeFeatureModal()" aria-label="Close modal">&times;</button>
+      
+      <div class="feature-modal-body" id="feature-modal-content">
+        <!-- Dynamically injected with vector illustrations, app screenshot snippets, and full copy -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Hotspot Interactive Toast -->
+  <div class="hotspot-toast" id="hotspot-toast" style="display: none;">
+    <span class="toast-icon">💡</span>
+    <span class="toast-text" id="hotspot-toast-text">Feature info</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
