@@ -120,72 +120,46 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+let qrCodeInstance = null;
+
 /**
- * Generates and renders a clean, crisp vector SVG QR code with Social Buddy branding
+ * Generates and renders a genuine, camera-scannable QR Code
  */
 function renderHighFidelityQRCode() {
   const container = document.getElementById('qr-code-container');
   if (!container) return;
+  container.innerHTML = '';
 
-  // 21x21 QR Code Version 1 pattern representing 'socialbuddy://discover'
-  const matrix = [
-    [1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,1,0,0,1,1,0,1,0,1,0,0,0,0,0,1],
-    [1,0,1,1,1,0,1,0,1,0,0,1,0,0,1,0,1,1,1,0,1],
-    [1,0,1,1,1,0,1,0,0,1,0,0,1,0,1,0,1,1,1,0,1],
-    [1,0,1,1,1,0,1,0,1,1,1,0,0,0,1,0,1,1,1,0,1],
-    [1,0,0,0,0,0,1,0,0,0,1,1,1,0,1,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1],
-    [0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0],
-    [1,1,0,1,0,1,1,1,0,1,1,0,1,1,1,0,1,0,1,1,0],
-    [0,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,1],
-    [1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,1,1,0,1,0,0],
-    [0,1,1,0,1,0,1,1,0,0,1,0,0,1,1,0,1,1,0,1,1],
-    [1,0,0,1,0,1,0,0,1,1,0,1,1,0,0,1,0,0,1,1,0],
-    [0,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,1,1,0,0,1],
-    [1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,0,1,0,1,1,1],
-    [1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,0,0],
-    [1,0,1,1,1,0,1,0,1,0,1,1,0,1,1,0,1,0,1,0,1],
-    [1,0,1,1,1,0,1,0,0,1,0,0,1,0,1,0,0,1,1,0,0],
-    [1,0,1,1,1,0,1,0,1,1,1,0,0,1,1,0,1,1,0,1,1],
-    [1,0,0,0,0,0,1,0,0,0,1,1,1,0,0,1,1,0,1,0,1],
-    [1,1,1,1,1,1,1,0,1,0,0,1,0,1,1,0,0,1,1,1,0]
-  ];
+  // Determine the scannable URL:
+  // If hosted online (Vercel), use window.location.origin
+  // If running locally on PC, use the LAN Wi-Fi IP so the phone camera can open it
+  let baseUrl = window.location.origin;
+  if (!baseUrl || baseUrl === 'null' || baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1')) {
+    baseUrl = 'http://192.168.1.7:3000';
+  }
+  
+  const targetScanUrl = baseUrl + (baseUrl.includes('?') ? '&' : '?') + 'launch=true';
+  console.log('[Social Buddy] Generating scannable QR Code for:', targetScanUrl);
 
-  const size = 200;
-  const modules = matrix.length;
-  const cellSize = size / modules;
-
-  let rects = '';
-  for (let r = 0; r < modules; r++) {
-    for (let c = 0; c < modules; c++) {
-      if (matrix[r][c] === 1) {
-        rects += `<rect x="${c * cellSize}" y="${r * cellSize}" width="${cellSize + 0.05}" height="${cellSize + 0.05}" fill="#07080B" />`;
-      }
-    }
+  if (typeof QRCode !== 'undefined') {
+    qrCodeInstance = new QRCode(container, {
+      text: targetScanUrl,
+      width: 195,
+      height: 195,
+      colorDark: '#07080B',
+      colorLight: '#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } else {
+    // Direct link fallback
+    container.innerHTML = `<div style="color:#000; font-size:12px; padding: 20px; text-align:center;">Open in phone:<br><a href="${targetScanUrl}" style="color:#FF5400; font-weight:bold;">${targetScanUrl}</a></div>`;
   }
 
-  // Embed custom compass icon in the center with obsidian orange accent
-  const centerSize = 44;
-  const centerPos = (size - centerSize) / 2;
-
-  const svg = `
-    <svg viewBox="0 0 ${size} ${size}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${size}" height="${size}" fill="#FFFFFF" rx="8" />
-      <g>${rects}</g>
-      <!-- Center Emblem Badge -->
-      <rect x="${centerPos - 3}" y="${centerPos - 3}" width="${centerSize + 6}" height="${centerSize + 6}" rx="8" fill="#FFFFFF" />
-      <rect x="${centerPos}" y="${centerPos}" width="${centerSize}" height="${centerSize}" rx="6" fill="#07080B" stroke="#FF5400" stroke-width="2" />
-      <!-- Compass Star in Center -->
-      <g transform="translate(${size/2}, ${size/2}) scale(0.65)">
-        <polygon points="0,-16 6,0 0,-4 -6,0" fill="#FF5400" />
-        <polygon points="0,16 6,0 0,4 -6,0" fill="#FFC837" />
-        <circle cx="0" cy="0" r="3" fill="#FFFFFF" />
-      </g>
-    </svg>
-  `;
-
-  container.innerHTML = svg;
+  // Update modal subtitle with scannable link
+  const subtitle = document.querySelector('.qr-modal-subtitle');
+  if (subtitle) {
+    subtitle.innerHTML = `Scan with your mobile camera to open <code>${targetScanUrl}</code> and launch the app directly.`;
+  }
 }
 
 // =========================================================================
@@ -543,6 +517,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Check if opened via QR Code scan on mobile to auto-redirect into app
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('launch') === 'true') {
+    const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobileDevice) {
+      showToastNotification('🚀 QR Code Recognized: Launching SOCIAL-BUDDY App...');
+      setTimeout(() => {
+        launchSocialBuddy('qr_scan_autolaunch');
+      }, 400);
+    }
+  }
 
   // Automatically trigger a live pop-up banner after 2 seconds to showcase modal interactivity
   setTimeout(triggerLivePopUpNotification, 2000);
