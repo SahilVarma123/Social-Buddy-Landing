@@ -1,0 +1,12 @@
+# Ignore mobile React Native / Expo files from Vercel deployment
+App.tsx
+index.ts
+src/
+supabase/
+docs/
+server.js
+tsconfig.json
+package.json
+package-lock.json
+node_modules/
+.claude/
